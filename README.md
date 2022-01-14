@@ -1,5 +1,5 @@
 # thePokerClub
-This repository consists of smart contracts for use in running a large public Poker Club as a DAO on the Ethereum blockchain. 
+This repository consists of smart contracts for use in running a private Poker Club as a DAO on the Ethereum blockchain. 
 Everything contained here is hypothetical and meant to exist as part of my Solidity Developer portfolio.
 
 Contracts in this repository (and primary functionality) are listed below.
