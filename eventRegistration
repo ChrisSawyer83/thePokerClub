@@ -1,0 +1,29 @@
+pragma solidity >=0.7.0 <0.9.0;
+
+import "./membership.sol";
+
+contract tournamentRegistration is clubMembership{
+
+    uint joinDigits = 5;
+    uint joinModulus = 10 ** joinDigits;
+
+    struct Registrant {
+        string name;
+        uint32 memberId;
+    }
+
+    Registered[] public registrants;
+
+    mapping (uint => address) public joinIdToOwner;
+    mapping (address => uint) public tournamentCountOfOwner;
+
+    function joinTournament(uint _memberId, uint _seat) public {
+        uint joinId = registrants.push(Registered(_memberId, _seat));
+        
+    }
+
+    function _generateRandomJoinId(uint _memberId) private view returns(uint) {
+        uint join(keccak256(abi.encodePacked(_memberId)));
+        return join % joinModulus;
+    }
+}
