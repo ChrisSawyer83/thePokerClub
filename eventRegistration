@@ -4,26 +4,33 @@ import "./membership.sol";
 
 contract tournamentRegistration is clubMembership{
 
+    //setting member tournament registration Id to 5 digits to keep number manageable
+    //modulus function truncates the Id to 2 digits when viewing
     uint joinDigits = 5;
     uint joinModulus = 10 ** joinDigits;
-
+    
+    //struct of tournament registrants with packed uint for management of gas fees
     struct Registrant {
         string name;
         uint32 memberId;
     }
 
+    //dynamic public array of registrants
     Registered[] public registrants;
 
+    //basic mappings
     mapping (uint => address) public joinIdToOwner;
     mapping (address => uint) public tournamentCountOfOwner;
 
+    //public function allowing members to register for tournament
+    //information pushed to registrant array
     function joinTournament(uint _memberId, uint _seat) public {
         uint joinId = registrants.push(Registered(_memberId, _seat));
-        
     }
-
+    
+    //private function for generating random tournamet Id using basic hash function
     function _generateRandomJoinId(uint _memberId) private view returns(uint) {
-        uint join(keccak256(abi.encodePacked(_memberId)));
+        uint joinId(keccak256(abi.encodePacked(_memberId)));
         return join % joinModulus;
     }
 }
