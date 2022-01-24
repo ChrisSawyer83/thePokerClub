@@ -14,15 +14,15 @@ Contracts in this repository (and primary functionality) are listed below.
 3. eventRegistration - storage contract for Tournament registration
 
          - transfer of ERC20 tokens 
-         - random number generation (RNG) for Tournament seating assignments
+         - creation of unique tournament Id
          
-3. clubLeaderBoard - storage contract for Tournament results
+4. clubLeaderBoard - storage contract for Tournament results
 
          - creation of ERC721 NFT for Tournament winner
          - increment/decrement member LeaderBoard point balances
          - view current LeaderBoard status   
          
-4. clubProposals - ballot contract for proposed rule changes
+5. clubProposals - ballot contract for proposed rule changes
 
          - vote weight assignments
          - delegation for proxy voting
