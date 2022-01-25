@@ -20,7 +20,11 @@ contract clubProposals is clubMembership {
         uint16 voteCount; 
     }
 
+    uint public proposalEndTime;
+    uint public votingTime;
     address public votingMember;
+
+    error votingEnded();
 
     mapping(address => votingMember) public members;
 
@@ -78,6 +82,9 @@ contract clubProposals is clubMembership {
         sender.voted = true;
         sender.vote = proposal;
         proposals[proposedRuleChange].voteCount += sender.weight;
+
+        if (block.timestamp > proposalEndTime)
+        revert votingEnded();
     }
 
     //identifies winning proposal based on votes cast
