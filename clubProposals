@@ -1,0 +1,101 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity ^0.6.0;
+
+import "./clubMembership.sol/";
+
+contract clubProposals is clubMembership {
+   
+    //basic struct for members and their votes packed for gas optimization
+    struct votingMember { 
+        uint16 weight; 
+        uint16 voteId;   
+        bool voted;  
+        address delegate;
+    }
+
+    //basic struct for what a proposed rule change is called and how many votes it needs until voting is complete packed for gas optimization
+    struct proposedRuleChange {
+        bytes32 name;   
+        uint16 voteCount; 
+    }
+
+    address public votingMember;
+
+    mapping(address => votingMember) public members;
+
+    proposedRuleChange[] public proposals;
+
+    //establishes new ballot of submitted proposals
+    constructor(bytes32[] memory proposalNames) {
+        clubManager = msg.sender;
+        members[clubManager].weight = 1;
+
+    //adds new proposal to end of the array
+        for (uint i = 0; i < proposalNames.length; i++) {
+            proposals.push(ProposedChange({
+                name: proposalNames[i],
+                voteCount: 0
+            }));
+        }
+    }
+  
+    //right to vote assigned to members; only the club manager can assign this 
+    function giveRightToVote(address _voter) public {
+        require(msg.sender == clubManager, "Only the Club Manager can give right to vote.");
+        require(!voters[votingMember].voted, "The club member already voted on this proposal.");
+        require(voters[votingMember].weight == 0);
+        members[votingMember].weight = 1;
+    }
+
+    //club members can nominate a proxy for their vote, but can only vote once and cannot delegate a vote to themselves
+    function delegate(address to) public {
+        votingMember storage sender = members[msg.sender];
+        require(!sender.voted, "You already voted.");
+        require(to != msg.sender, "Self-delegation is not allowed.");
+
+        while (members[to].delegate != address(0)) {
+            to = members[to].delegate;
+
+            require(to != msg.sender, "Found loop in delegation.");
+        }
+        
+        sender.voted = true;
+        sender.delegate = to;
+        clubMember storage delegate_ = members[to];
+        if (delegate_.voted) {
+            members[delegate_.vote].voteCount += sender.weight;
+        } else {
+            delegate_.weight += sender.weight;
+        }
+    }
+
+    //basic voting function for casting a vote on a proposal
+    function vote(uint proposal) public {
+        clubMember storage sender = members[msg.sender];
+        require(sender.weight != 0, "This member has no right to vote");
+        require(!sender.voted, "This member already voted.");
+        sender.voted = true;
+        sender.vote = proposal;
+        proposals[proposedRuleChange].voteCount += sender.weight;
+    }
+
+    //identifies winning proposal based on votes cast
+    function winningProposal() public view
+            returns (uint winningProposal_)
+    {
+        uint winningVoteCount = 0;
+        for (uint p = 0; p < proposals.length; p++) {
+            if (proposals[p].voteCount > winningVoteCount) {
+                winningVoteCount = proposals[p].voteCount;
+                winningProposal_ = p;
+            }
+        }
+    }
+
+    function winnerName() public view
+            returns (bytes32 winnerName_)
+    {
+        winnerName_ = proposals[winningProposal()].name;
+    }
+}
