@@ -1,6 +1,6 @@
 pragma solidity >=0.7.0 <0.9.0;
 
-import "./membership.sol";
+import "./clubmembership.sol";
 
 contract tournamentRegistration is clubMembership{
 
