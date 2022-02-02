@@ -16,11 +16,9 @@ Contracts in this repository (and primary functionality) are listed below.
          - transfer of ERC20 tokens 
          - creation of unique tournament Id
          
-4. clubLeaderBoard - storage contract for Tournament results
+4. nftGeneration - creation of unique NFT prize for tournament winner
 
          - creation of ERC721 NFT for Tournament winner
-         - increment/decrement member LeaderBoard point balances
-         - view current LeaderBoard status   
          
 5. clubProposals - ballot contract for proposed rule changes
 
